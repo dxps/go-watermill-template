@@ -1,4 +1,4 @@
-import { SubscriptionHandlers, PublishHandlers, Imports} from '../../components/Handlers';
+import { SubscriptionHandlers, PublishHandlers, Imports } from '../../components/Handlers';
 import { render } from '@asyncapi/generator-react-sdk';
 import parser from '@asyncapi/parser'
 import fs from 'fs'
@@ -10,7 +10,7 @@ const docWithAMQPSubscriber = fs.readFileSync(path.resolve(__dirname, '../files/
 
 describe('SubscriptionHandlers', () => {
 
-  it('should return a subscription handler function', async function() {
+  it('should return a subscription handler function', async function () {
     const expected = `
 // OnLightMeasured subscription handler for light/measured.
 func OnLightMeasured(msg *message.Message) error {
@@ -42,7 +42,7 @@ func OnTempMeasured(msg *message.Message) error {
     expect(result.trim()).toEqual(expected.trim());
   })
 
-  it('should not return anything when there are no publishers', async function() {
+  it('should not return anything when there are no publishers', async function () {
     const doc = await parser.parse(docWithoutAMQPublisher);
     const result = render(<SubscriptionHandlers channels={doc.channels()} />)
     expect(result).toEqual('');
@@ -52,11 +52,10 @@ func OnTempMeasured(msg *message.Message) error {
 
 describe('PublishHandlers', () => {
 
-  it('should return publish handler functions', async function() {
+  it('should return publish handler functions', async function () {
     const expected = `
-// LumenPublish publish handler for light/measured.
+// LumenPublish is the publish handler for light/measured.
 func LumenPublish(ctx context.Context, a *amqp.Publisher, payload LightMeasured) error {
-
   m, err := PayloadToMessage(payload)
   if err != nil {
       log.Fatalf("error converting payload: %+v to message error: %s", payload, err)
@@ -65,9 +64,8 @@ func LumenPublish(ctx context.Context, a *amqp.Publisher, payload LightMeasured)
   return a.Publish("light/measured", m)
 }
 
-// TempPublish publish handler for temp/measured.
+// TempPublish is the publish handler for temp/measured.
 func TempPublish(ctx context.Context, a *amqp.Publisher, payload TempMeasured) error {
-
   m, err := PayloadToMessage(payload)
   if err != nil {
       log.Fatalf("error converting payload: %+v to message error: %s", payload, err)
@@ -83,7 +81,7 @@ func TempPublish(ctx context.Context, a *amqp.Publisher, payload TempMeasured) e
 })
 
 describe('Imports', () => {
-  it('should return imports for subscribers', async function() {
+  it('should return imports for subscribers', async function () {
     const expected = `
   "encoding/json"
   "github.com/ThreeDotsLabs/watermill/message"
@@ -93,7 +91,7 @@ describe('Imports', () => {
     expect(result.trim()).toEqual(expected.trim())
   })
 
-  it('should return imports for publishers', async function() {
+  it('should return imports for publishers', async function () {
     const expected = `
   "context"
   "github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
